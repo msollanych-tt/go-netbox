@@ -43,6 +43,9 @@ type AvailableIP struct {
 	// Read Only: true
 	Family int64 `json:"family,omitempty"`
 
+	// tenant
+	Tenant *NestedTenant `json:"tenant,omitempty"`
+
 	// vrf
 	Vrf *NestedVRF `json:"vrf,omitempty"`
 }
@@ -52,6 +55,10 @@ func (m *AvailableIP) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAddress(formats); err != nil {
+		res = append(res, err)
+	}
+
+	if err := m.validateTenant(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -72,6 +79,25 @@ func (m *AvailableIP) validateAddress(formats strfmt.Registry) error {
 
 	if err := validate.MinLength("address", "body", m.Address, 1); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *AvailableIP) validateTenant(formats strfmt.Registry) error {
+	if swag.IsZero(m.Tenant) { // not required
+		return nil
+	}
+
+	if m.Tenant != nil {
+		if err := m.Tenant.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tenant")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tenant")
+			}
+			return err
+		}
 	}
 
 	return nil
@@ -108,6 +134,10 @@ func (m *AvailableIP) ContextValidate(ctx context.Context, formats strfmt.Regist
 		res = append(res, err)
 	}
 
+	if err := m.contextValidateTenant(ctx, formats); err != nil {
+		res = append(res, err)
+	}
+
 	if err := m.contextValidateVrf(ctx, formats); err != nil {
 		res = append(res, err)
 	}
@@ -131,6 +161,27 @@ func (m *AvailableIP) contextValidateFamily(ctx context.Context, formats strfmt.
 
 	if err := validate.ReadOnly(ctx, "family", "body", int64(m.Family)); err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func (m *AvailableIP) contextValidateTenant(ctx context.Context, formats strfmt.Registry) error {
+
+	if m.Tenant != nil {
+
+		if swag.IsZero(m.Tenant) { // not required
+			return nil
+		}
+
+		if err := m.Tenant.ContextValidate(ctx, formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("tenant")
+			} else if ce, ok := err.(*errors.CompositeError); ok {
+				return ce.ValidateName("tenant")
+			}
+			return err
+		}
 	}
 
 	return nil
