@@ -43,8 +43,8 @@ type WritableAvailableIP struct {
 	// Read Only: true
 	Family int64 `json:"family,omitempty"`
 
-	// tenant
-	Tenant *NestedTenant `json:"tenant,omitempty"`
+	// Tenant
+	Tenant int64 `json:"tenant,omitempty"`
 }
 
 // Validate validates this writable available IP
@@ -52,10 +52,6 @@ func (m *WritableAvailableIP) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateAddress(formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.validateTenant(formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -77,25 +73,6 @@ func (m *WritableAvailableIP) validateAddress(formats strfmt.Registry) error {
 	return nil
 }
 
-func (m *WritableAvailableIP) validateTenant(formats strfmt.Registry) error {
-	if swag.IsZero(m.Tenant) { // not required
-		return nil
-	}
-
-	if m.Tenant != nil {
-		if err := m.Tenant.Validate(formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("tenant")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("tenant")
-			}
-			return err
-		}
-	}
-
-	return nil
-}
-
 // ContextValidate validate this writable available IP based on the context it is used
 func (m *WritableAvailableIP) ContextValidate(ctx context.Context, formats strfmt.Registry) error {
 	var res []error
@@ -105,10 +82,6 @@ func (m *WritableAvailableIP) ContextValidate(ctx context.Context, formats strfm
 	}
 
 	if err := m.contextValidateFamily(ctx, formats); err != nil {
-		res = append(res, err)
-	}
-
-	if err := m.contextValidateTenant(ctx, formats); err != nil {
 		res = append(res, err)
 	}
 
@@ -131,27 +104,6 @@ func (m *WritableAvailableIP) contextValidateFamily(ctx context.Context, formats
 
 	if err := validate.ReadOnly(ctx, "family", "body", int64(m.Family)); err != nil {
 		return err
-	}
-
-	return nil
-}
-
-func (m *WritableAvailableIP) contextValidateTenant(ctx context.Context, formats strfmt.Registry) error {
-
-	if m.Tenant != nil {
-
-		if swag.IsZero(m.Tenant) { // not required
-			return nil
-		}
-
-		if err := m.Tenant.ContextValidate(ctx, formats); err != nil {
-			if ve, ok := err.(*errors.Validation); ok {
-				return ve.ValidateName("tenant")
-			} else if ce, ok := err.(*errors.CompositeError); ok {
-				return ce.ValidateName("tenant")
-			}
-			return err
-		}
 	}
 
 	return nil

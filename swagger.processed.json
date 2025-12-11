@@ -45969,7 +45969,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/AvailableIP"
+                "$ref": "#/definitions/WritableAvailableIP"
               }
             }
           }
@@ -48342,7 +48342,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "#/definitions/AvailableIP"
+                "$ref": "#/definitions/WritableAvailableIP"
               }
             }
           }
@@ -87887,7 +87887,8 @@
           "minLength": 1
         },
         "tenant": {
-          "$ref": "#/definitions/NestedTenant"
+          "title": "Tenant",
+          "type": "integer"
         }
       }
     },

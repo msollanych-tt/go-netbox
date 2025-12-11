@@ -88400,7 +88400,8 @@
           "minLength": 1
         },
         "tenant": {
-          "$ref": "#/definitions/NestedTenant"
+          "title": "Tenant",
+          "type": "integer"
         }
       }
     },
