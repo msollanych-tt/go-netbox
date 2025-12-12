@@ -88379,6 +88379,9 @@
         },
         "vrf": {
           "$ref": "#/definitions/NestedVRF"
+        },
+        "tenant": {
+          "$ref": "#/definitions/NestedTenant"
         }
       }
     },
@@ -88395,6 +88398,10 @@
           "type": "string",
           "readOnly": true,
           "minLength": 1
+        },
+        "tenant": {
+          "title": "Tenant",
+          "type": "integer"
         }
       }
     },
